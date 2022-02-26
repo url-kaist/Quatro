@@ -1,6 +1,6 @@
 # Quatro 
 
-Official page of *"A Single Correspondence Is Enough: Robust Global Registration \\to Avoid Degeneracy in Urban Environments"*, which is accepted @ ICRA'22 
+Official page of *"A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments"*, which is accepted @ ICRA'22 
 
 ## Code will be updated soon!!!
 
