@@ -13,12 +13,12 @@ If you use our code or method in your work, please consider citing the following
 
 
 @article{lim2022quatro,
-title={A Single Correspondence Is Enough: Robust Global Registration \\to Avoid Degeneracy in Urban Environments},
-author={Lim, Hyungtae and Minho, Oh and Myung, Hyun},
-booktitle={Proc. IEEE Int. Conf. Robot. Autom.},
-year={2022},
-pages={Accepted. To appear}
-}
+    title={A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments},
+    author={Lim, Hyungtae and Minho, Oh and Myung, Hyun},
+    booktitle={Proc. IEEE Int. Conf. Robot. Autom.},
+    year={2022},
+    pages={Accepted. To appear}
+    }
 
 
 @article{lim2021patchwork,
@@ -28,4 +28,4 @@ pages={Accepted. To appear}
     year={2021}
     }
 
-
+---------
