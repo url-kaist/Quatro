@@ -1,3 +1,19 @@
+.codes/*
+.cmake/*
+
+build/*
+
+cmake-build-release/*
+cmake-build-debug/*
+
+materials/*.bin
+materials/*.pcd
+*bin
+*pcd
+
+.idea/
+.vscode/
+
 # Prerequisites
 *.d
 
