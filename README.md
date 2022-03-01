@@ -81,7 +81,7 @@ sudo apt-get install ros-melodic-jsk-rviz-plugins
 ```
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
-git clone git@github.com:LimHyungTae/quatro.git
+git clone git@github.com:url-kaist/quatro.git
 cd quatro && mkdir build && cd build
 # To build Quatro, `pmc-src` should be placed in `build` directory in catkin workspace
 # i.e. `~/catkin_ws/build/pmc-src`
