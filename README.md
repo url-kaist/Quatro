@@ -107,8 +107,9 @@ In this study, fast point feature histogram (FPFH) is utilized, which is widely 
 
 For this reason, we employ voxel-sampled FPFH, which is preceded by voxel-sampling. This is followed by the correspondence test. In addition, we employ [Patchwork](https://arxiv.org/abs/2108.05560), which is the state-of-the-art method for ground segmentation, and image projection to reject some subclusters, which is proposed in [Le-GO-LOAM](https://github.com/RobustFieldAutonomyLab/LeGO-LOAM). These modules are not presented in our paper! 
 
-Finally, we can reduce the computational time of feature extraction & matching, i.e. the front-end of global registration, from tens of seconds to almost 0.2 sec. The overall pipeline is as follows (but not uploaded...lol):
+Finally, we can reduce the computational time of feature extraction & matching, i.e. the front-end of global registration, from tens of seconds to almost 0.2 sec. The overall pipeline is as follows:
 
+![](materials/quatro_overview.PNG)
 
 #### Note
 
