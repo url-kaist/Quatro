@@ -147,7 +147,7 @@ If our research has been helpful, please cite the below papers:
 ```
 @article{lim2022quatro,
     title={A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments},
-    author={Lim, Hyungtae and Minho, Oh and Myung, Hyun},
+    author={Lim, Hyungtae and Yeon, Suyong and Ryu, Suyong and Lee, Yonghan and Kim, Youngji and Yun, Jaeseong and Jung, Euigon and Lee, Donghwan and Myung, Hyun},
     booktitle={Proc. IEEE Int. Conf. Robot. Autom.},
     year={2022},
     pages={Accepted. To appear}
