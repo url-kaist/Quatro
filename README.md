@@ -34,6 +34,12 @@ KITTI dataset                  |  NAVER LABS Loc. dataset
 :-------------------------:|:-------------------------:
 ![](materials/kitti_for_readme.PNG) |  ![](materials/labs_for_readme.PNG)
 
+
+#### Contributors
+
+* Beomsoo Kim (as a research intern): `qjatn1208@naver.com`
+* Hyungtae Lim: `shapelim@kaist.ac.kr`
+
 #### ToDo
 
 - [x] Add ROS support
