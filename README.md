@@ -38,6 +38,7 @@ KITTI dataset                  |  NAVER LABS Loc. dataset
 #### Contributors
 
 * Beomsoo Kim (as a research intern): `qjatn1208@naver.com`
+* Daebeom Kim (as a research intern): `ted97k@naver.com`
 * Hyungtae Lim: `shapelim@kaist.ac.kr`
 
 #### ToDo
