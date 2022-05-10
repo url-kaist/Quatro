@@ -159,7 +159,7 @@ inline Eigen::Matrix2d svdRot2d(const Eigen::Matrix<double, 2, Eigen::Dynamic>& 
   Eigen::Matrix2d V = svd.matrixV();
 
   if (U.determinant() * V.determinant() < 0) {
-    V.col(2) *= -1;
+    V.col(1) *= -1;
   }
 
   return V * U.transpose();
