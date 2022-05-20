@@ -1,6 +1,6 @@
 # Quatro 
 
-Official page of *"A Single Correspondence Is Enough: Robust Global Registration \\to Avoid Degeneracy in Urban Environments"*, which is accepted @ ICRA'22 
+Official page of *"A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments"*, which is accepted @ ICRA'22. **NOTE that this repository is the re-implmenation, so it is not exactly same with the original version**.   
 
 #### [Video] [Priprint Paper]
 
@@ -181,4 +181,4 @@ This work was supported by the Industry Core Technology Development Project, 200
 
 
 ### Copyright
-- All codes on this page are copyrighted by KAIST and NAVER LABS and published under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License. You must attribute the work in the manner specified by the author. You may not use the work for commercial purposes, and you may only distribute the resulting work under the same license if you alter, transform, or create the work.
+- All codes on this page are copyrighted by KAIST published under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License. You must attribute the work in the manner specified by the author. You may not use the work for commercial purposes, and you may only distribute the resulting work under the same license if you alter, transform, or create the work.
