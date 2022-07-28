@@ -12,7 +12,6 @@
 #include "quatro/cloud_info.h"
 
 #include <opencv/cv.h>
-//#include <opencv2/opencv.hpp>	// ubuntu20.04
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
