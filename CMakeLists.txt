@@ -62,11 +62,11 @@ endif ()
 
 configure_file(pmc/pmc.CMakeLists.txt.in pmc-download/CMakeLists.txt)
 execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pmc-download")
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/pmc-download")
 execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pmc-download")
-add_subdirectory("${CMAKE_BINARY_DIR}/pmc-src"   #CMAKE_BINARY_DIR =>
-        "${CMAKE_BINARY_DIR}/pmc-build")
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/pmc-download")
+add_subdirectory("${CMAKE_BINARY_DIR}/${PROJECT_NAME}/pmc-src"   #CMAKE_BINARY_DIR =>
+        "${CMAKE_BINARY_DIR}/${PROJECT_NAME}/pmc-build")
 
 ####### Executable ####### 
 set(teaser_src
@@ -82,6 +82,7 @@ target_link_libraries(run_example
         PUBLIC
         ${PCL_LIBRARY_DIRS}
         ${catkin_LIBRARIES}
+        ${OpenCV_LIBRARIES}
         stdc++fs
         pmc
         )
