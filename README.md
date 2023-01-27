@@ -8,6 +8,9 @@ Official page of *"A Single Correspondence Is Enough: Robust Global Registration
 
 ![](materials/README_demo_v2.gif)
 
+## NEWS (23.1.27)
+- An improved version is under review in the Interntaitonal Journal of Robotics Research~(IJRR)
+- The codes would be refactored and then updated soon!
 
 ## Characteristics
 
