@@ -11,7 +11,7 @@
 
 #include "quatro/cloud_info.h"
 
-#include <opencv/cv.h>
+#include <opencv2/core.hpp>
 
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>

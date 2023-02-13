@@ -25,6 +25,7 @@ find_package(OpenMP)
 find_package(PCL 1.8 REQUIRED)
 find_package(Boost 1.54 REQUIRED)
 find_package(Eigen3 3.2 QUIET REQUIRED NO_MODULE)
+find_package(catkin QUIET)
 
 add_message_files(
         FILES
@@ -51,22 +52,14 @@ include_directories(
         include
 )
 
+include(3rdparty/find_dependencies.cmake)
+
 if (OPENMP_FOUND)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif ()
 
-# pmc (Parallel Maximum Clique)
-# To port Quatro to other package, pmc is necessary
-# Please check pmc/pmc.CMakeLists.txt.in file and you should add `pmc` in target_link_libraries()
 
-configure_file(pmc/pmc.CMakeLists.txt.in pmc-download/CMakeLists.txt)
-execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pmc-download")
-execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/pmc-download")
-add_subdirectory("${CMAKE_BINARY_DIR}/pmc-src"   #CMAKE_BINARY_DIR =>
-        "${CMAKE_BINARY_DIR}/pmc-build")
 
 ####### Executable ####### 
 set(teaser_src
