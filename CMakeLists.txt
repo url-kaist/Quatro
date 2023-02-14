@@ -75,5 +75,5 @@ target_link_libraries(run_example
         ${PCL_LIBRARY_DIRS}
         ${catkin_LIBRARIES}
         stdc++fs
-        pmc
+        pmc::pmc
         )
