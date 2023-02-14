@@ -54,6 +54,9 @@ include_directories(
 
 include(3rdparty/find_dependencies.cmake)
 
+file(DOWNLOAD https://urserver.kaist.ac.kr/publicdata/quatro/000540.bin ${CMAKE_CURRENT_LIST_DIR}/materials/000540.bin)
+file(DOWNLOAD https://urserver.kaist.ac.kr/publicdata/quatro/001319.bin ${CMAKE_CURRENT_LIST_DIR}/materials/001319.bin)
+
 if (OPENMP_FOUND)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")

@@ -75,39 +75,17 @@ sudo apt install cmake libeigen3-dev libboost-all-dev
 ```
 
 2. Install [ROS](http://torch.ch/docs/getting-started.html) on a machine.
-3. Thereafter, [jsk-visualization](https://github.com/jsk-ros-pkg/jsk_visualization) is required to visualize Ground Likelihood Estimation status of [Patchwork](https://github.com/LimHyungTae/patchwork).
-
-(Note that Patchwork is not directly related to Quatro. Patchwork is just used as preprocessing before feature extraction & matching. More details are [here](#How-to-Run-Quatro))
-
-```bash
-sudo apt-get install ros-melodic-jsk-recognition
-sudo apt-get install ros-melodic-jsk-common-msgs
-sudo apt-get install ros-melodic-jsk-rviz-plugins
-```
-
-
-* Then, run the following script. We use [catkin tools](https://catkin-tools.readthedocs.io/en/latest/),
+3. Then, build Quatro package and enjoy! :) We use [catkin tools](https://catkin-tools.readthedocs.io/en/latest/) 
 
 ```
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
 git clone git@github.com:url-kaist/Quatro.git
-cd Quatro && mkdir build && cd build
-# To build Quatro, `pmc-src` should be placed in `build` directory in catkin workspace
-# i.e. `~/catkin_ws/build/pmc-src`
-cmake ..
-mv pmc-src/ ../../../build/
 cd ~/catkin_ws
 catkin build quatro 
 ```
 
-**Note that without `pmc-src`**, the below error occurs!
-
-``` 
-CMake Error at quatro/CMakeLists.txt:53 (add_subdirectory):
-  add_subdirectory given source "~/catkin_ws/build/pmc-src" which
-  is not an existing directory.
- ```
+**Note** Quatro requires `pmc` library. 
 
 ## How to Run Quatro
 
@@ -126,9 +104,11 @@ Finally, we can reduce the computational time of feature extraction & matching, 
 For fine-tuning of the parameters to use this code in your own situations, please refer to `config` folder. In particular, for fine-tuning of Patchwork, please refer to [this Wiki](https://github.com/LimHyungTae/patchwork/wiki/4.-IMPORTANT:-Setting-Parameters-of-Patchwork-in-Your-Own-Env.)
 
 ### TL;DR
-1. Download toy pcd bins files 
+1. ~Download toy pcd bins files~ 
   
-The point clouds are from the KITTI dataset, so these are captured by Velodyne-64-HDE
+~The point clouds are from the KITTI dataset, so these are captured by Velodyne-64-HDE~
+
+Toy pcds are automatically downloaded. If there is a problem, follow the below commands:
 
 ```
 roscd quatro
