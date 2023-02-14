@@ -34,8 +34,11 @@ ExternalProject_Add(
 ExternalProject_Get_Property(external_pmc INSTALL_DIR)
 add_library(PMCHelper INTERFACE)
 add_dependencies(PMCHelper external_pmc)
+# `target_include_directories`: where to look for headers
 target_include_directories(PMCHelper INTERFACE ${INSTALL_DIR}/include)
+# `target_link_directories`: where to look for binary files
 target_link_directories(PMCHelper INTERFACE ${INSTALL_DIR}/lib)
+# link PMChelper to pmc, which should be equal to PREFIX (in line 27)
 target_link_libraries(PMCHelper INTERFACE pmc)
 set_property(TARGET PMCHelper PROPERTY EXPORT_NAME pmc::pmc)
 add_library(pmc::pmc ALIAS PMCHelper)
