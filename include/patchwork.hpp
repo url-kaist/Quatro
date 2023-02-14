@@ -4,7 +4,6 @@
 #include <iostream>
 #include <sensor_msgs/PointCloud2.h>
 #include <ros/ros.h>
-#include <jsk_recognition_msgs/PolygonArray.h>
 #include <Eigen/Dense>
 #include <boost/format.hpp>
 #include <pcl_conversions/pcl_conversions.h>
@@ -109,16 +108,13 @@ public:
         num_rings_of_interest_ = elevation_thr_.size();
 
         node_handle_.param("/patchwork/visualize", visualize_, true);
-        poly_list_.header.frame_id = "/map";
-        poly_list_.polygons.reserve(130000);
-
+        
         revert_pc.reserve(NUM_HEURISTIC_MAX_PTS_IN_PATCH);
         ground_pc_.reserve(NUM_HEURISTIC_MAX_PTS_IN_PATCH);
         non_ground_pc_.reserve(NUM_HEURISTIC_MAX_PTS_IN_PATCH);
         regionwise_ground_.reserve(NUM_HEURISTIC_MAX_PTS_IN_PATCH);
         regionwise_nonground_.reserve(NUM_HEURISTIC_MAX_PTS_IN_PATCH);
 
-        PlaneViz      = node_handle_.advertise<jsk_recognition_msgs::PolygonArray>("/gpf/plane", 100);
         revert_pc_pub = node_handle_.advertise<sensor_msgs::PointCloud2>("/revert_pc", 100);
         reject_pc_pub = node_handle_.advertise<sensor_msgs::PointCloud2>("/reject_pc", 100);
 
@@ -148,8 +144,6 @@ public:
             pcl::PointCloud<PointT> &cloudOut,
             pcl::PointCloud<PointT> &cloudNonground,
             double &time_taken);
-
-    geometry_msgs::PolygonStamped set_plane_polygon(const MatrixXf &normal_v, const float &d);
 
 private:
     ros::NodeHandle node_handle_;
@@ -201,8 +195,6 @@ private:
 
     vector<Zone> ConcentricZoneModel_;
 
-    jsk_recognition_msgs::PolygonArray poly_list_;
-
     ros::Publisher          PlaneViz, revert_pc_pub, reject_pc_pub;
     pcl::PointCloud<PointT> revert_pc, reject_pc;
     pcl::PointCloud<PointT> ground_pc_;
@@ -239,21 +231,6 @@ private:
     void extract_initial_seeds_(
             const int zone_idx, const pcl::PointCloud<PointT> &p_sorted,
             pcl::PointCloud<PointT> &init_seeds);
-
-    /***
-     * For visulization of Ground Likelihood Estimation
-     */
-    geometry_msgs::PolygonStamped set_polygons(int r_idx, int theta_idx, int num_split);
-
-    geometry_msgs::PolygonStamped set_polygons(int zone_idx, int r_idx, int theta_idx, int num_split);
-
-    void set_ground_likelihood_estimation_status(
-            const int k, const int ring_idx,
-            const int concentric_idx,
-            const double z_vec,
-            const double z_elevation,
-            const double surface_variable);
-
 };
 
 
@@ -355,11 +332,6 @@ void PatchWork<PointT>::estimate_ground(
         pcl::PointCloud<PointT> &cloud_nonground,
         double &time_taken) {
 
-    // Just for visualization
-    poly_list_.header.stamp = ros::Time::now();
-    if (!poly_list_.polygons.empty()) poly_list_.polygons.clear();
-    if (!poly_list_.likelihood.empty()) poly_list_.likelihood.clear();
-
     static double start, t0, t1, t2, end;
 
     double                  t_total_ground   = 0.0;
@@ -424,14 +396,6 @@ void PatchWork<PointT>::estimate_ground(
                     const double surface_variable   =
                                          singular_values_.minCoeff() /
                                          (singular_values_(0) + singular_values_(1) + singular_values_(2));
-
-                    if (visualize_) {
-                        auto polygons = set_polygons(k, ring_idx, sector_idx, 3);
-                        polygons.header = poly_list_.header;
-                        poly_list_.polygons.push_back(polygons);
-                        set_ground_likelihood_estimation_status(k, ring_idx, concentric_idx, ground_z_vec,
-                                                                ground_z_elevation, surface_variable);
-                    }
 
                     double t_tmp2 = ros::Time::now().toSec();
                     if (ground_z_vec < uprightness_thr_) {
@@ -509,7 +473,6 @@ void PatchWork<PointT>::estimate_ground(
         cloud_ROS.header.frame_id = "/map";
         reject_pc_pub.publish(cloud_ROS);
     }
-    PlaneViz.publish(poly_list_);
 }
 
 template<typename PointT>
@@ -622,136 +585,6 @@ void PatchWork<PointT>::extract_piecewiseground(
     }
 }
 
-
-template<typename PointT>
-inline
-geometry_msgs::PolygonStamped PatchWork<PointT>::set_polygons(int r_idx, int theta_idx, int num_split) {
-    geometry_msgs::PolygonStamped polygons;
-    // Set point of polygon. Start from RL and ccw
-    geometry_msgs::Point32        point;
-
-    // RL
-    double r_len = r_idx * ring_size + min_range_;
-    double angle = theta_idx * sector_size;
-
-    point.x = r_len * cos(angle);
-    point.y = r_len * sin(angle);
-    point.z = MARKER_Z_VALUE;
-    polygons.polygon.points.push_back(point);
-    // RU
-    r_len = r_len + ring_size;
-    point.x = r_len * cos(angle);
-    point.y = r_len * sin(angle);
-    point.z = MARKER_Z_VALUE;
-    polygons.polygon.points.push_back(point);
-
-    // RU -> LU
-    for (int idx = 1; idx <= num_split; ++idx) {
-        angle = angle + sector_size / num_split;
-        point.x = r_len * cos(angle);
-        point.y = r_len * sin(angle);
-        point.z = MARKER_Z_VALUE;
-        polygons.polygon.points.push_back(point);
-    }
-
-    r_len = r_len - ring_size;
-    point.x = r_len * cos(angle);
-    point.y = r_len * sin(angle);
-    point.z = MARKER_Z_VALUE;
-    polygons.polygon.points.push_back(point);
-
-    for (int idx = 1; idx < num_split; ++idx) {
-        angle = angle - sector_size / num_split;
-        point.x = r_len * cos(angle);
-        point.y = r_len * sin(angle);
-        point.z = MARKER_Z_VALUE;
-        polygons.polygon.points.push_back(point);
-    }
-
-    return polygons;
-}
-
-template<typename PointT>
-inline
-geometry_msgs::PolygonStamped PatchWork<PointT>::set_polygons(int zone_idx, int r_idx, int theta_idx, int num_split) {
-    geometry_msgs::PolygonStamped polygons;
-    // Set point of polygon. Start from RL and ccw
-    geometry_msgs::Point32        point;
-
-    // RL
-    double zone_min_range = min_ranges_[zone_idx];
-    double r_len          = r_idx * ring_sizes_[zone_idx] + zone_min_range;
-    double angle          = theta_idx * sector_sizes_[zone_idx];
-
-    point.x = r_len * cos(angle);
-    point.y = r_len * sin(angle);
-    point.z = MARKER_Z_VALUE;
-    polygons.polygon.points.push_back(point);
-    // RU
-    r_len = r_len + ring_sizes_[zone_idx];
-    point.x = r_len * cos(angle);
-    point.y = r_len * sin(angle);
-    point.z = MARKER_Z_VALUE;
-    polygons.polygon.points.push_back(point);
-
-    // RU -> LU
-    for (int idx = 1; idx <= num_split; ++idx) {
-        angle = angle + sector_sizes_[zone_idx] / num_split;
-        point.x = r_len * cos(angle);
-        point.y = r_len * sin(angle);
-        point.z = MARKER_Z_VALUE;
-        polygons.polygon.points.push_back(point);
-    }
-
-    r_len = r_len - ring_sizes_[zone_idx];
-    point.x = r_len * cos(angle);
-    point.y = r_len * sin(angle);
-    point.z = MARKER_Z_VALUE;
-    polygons.polygon.points.push_back(point);
-
-    for (int idx = 1; idx < num_split; ++idx) {
-        angle = angle - sector_sizes_[zone_idx] / num_split;
-        point.x = r_len * cos(angle);
-        point.y = r_len * sin(angle);
-        point.z = MARKER_Z_VALUE;
-        polygons.polygon.points.push_back(point);
-    }
-
-    return polygons;
-}
-
-template<typename PointT>
-inline
-void PatchWork<PointT>::set_ground_likelihood_estimation_status(
-        const int k, const int ring_idx,
-        const int concentrix_idx,
-        const double z_vec,
-        const double z_elevation,
-        const double surface_variable) {
-    if (z_vec > uprightness_thr_) { //orthogonal
-        if (concentrix_idx < num_rings_of_interest_) {
-            if (z_elevation > elevation_thr_[ring_idx + 2 * k]) {
-                if (flatness_thr_[ring_idx + 2 * k] > surface_variable) {
-                    poly_list_.likelihood.push_back(FLAT_ENOUGH);
-                } else {
-                    poly_list_.likelihood.push_back(TOO_HIGH_ELEVATION);
-                }
-            } else {
-                poly_list_.likelihood.push_back(UPRIGHT_ENOUGH);
-            }
-        } else {
-            if (using_global_thr_ && (z_elevation > global_elevation_thr_)) {
-                poly_list_.likelihood.push_back(GLOBALLLY_TOO_HIGH_ELEVATION_THR);
-            } else {
-                poly_list_.likelihood.push_back(UPRIGHT_ENOUGH);
-            }
-        }
-    } else { // tilted
-        poly_list_.likelihood.push_back(TOO_TILTED);
-    }
-}
-
-
 template<typename PointT>
 inline
 void PatchWork<PointT>::check_input_parameters_are_correct() {
@@ -780,7 +613,6 @@ void PatchWork<PointT>::check_input_parameters_are_correct() {
 
 }
 
-
 template<typename PointT>
 inline
 void PatchWork<PointT>::cout_params() {
@@ -797,8 +629,6 @@ void PatchWork<PointT>::cout_params() {
     cout << (boost::format("flatness_thr_: %0.4f, %0.4f, %0.4f, %0.4f ") % flatness_thr_[0] % flatness_thr_[1] %
              flatness_thr_[2] %
              flatness_thr_[3]).str() << endl;
-
-
 }
 
 #endif
