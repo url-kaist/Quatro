@@ -63,7 +63,6 @@ endif ()
 
 ####### Executable ####### 
 set(teaser_src
-        src/registration.cc
         src/graph.cc
         src/teaser_utils/feature_matcher.cc
         src/teaser_utils/fpfh.cc
