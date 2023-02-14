@@ -28,13 +28,13 @@ ExternalProject_Add(
   URL https://github.com/LimHyungTae/pmc/archive/refs/tags/libpmc.tar.gz
   URL_HASH SHA256=64ea6e628fe0920df771d21a243df6a771ebde9221042fe203390ff1520e969d
   UPDATE_COMMAND ""
-  CONFIGURE_COMMAND ""
-  BUILD_COMMAND ""
-  INSTALL_COMMAND "")
+  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+)
 
-ExternalProject_Get_Property(external_pmc SOURCE_DIR)
+ExternalProject_Get_Property(external_pmc INSTALL_DIR)
 add_library(PMCHelper INTERFACE)
 add_dependencies(PMCHelper external_pmc)
-target_include_directories(PMCHelper SYSTEM INTERFACE $<BUILD_INTERFACE:${SOURCE_DIR}>)
+target_include_directories(PMCHelper INTERFACE ${INSTALL_DIR}/include)
+target_link_libraries(PMCHelper INTERFACE pmc)
 set_property(TARGET PMCHelper PROPERTY EXPORT_NAME pmc::pmc)
 add_library(pmc::pmc ALIAS PMCHelper)
