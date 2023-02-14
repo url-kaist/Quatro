@@ -2,7 +2,7 @@
 
 Official page of *"A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments"*, which is accepted @ ICRA'22. **NOTE that this repository is the re-implmenation, so it is not exactly same with the original version**.   
 
-#### [Video] [Priprint Paper]
+#### [[Video]](https://www.youtube.com/results?search_query=A+single+correpsondence+is+enough) [[Priprint Paper]](https://arxiv.org/abs/2203.06612)
 
 ## Demo
 
@@ -85,7 +85,7 @@ cd ~/catkin_ws
 catkin build quatro 
 ```
 
-**Note** Quatro requires `pmc` library. 
+**Note** Quatro requires `pmc` library, which is automatically installed via `3rdparty/find_dependencies.cmake`. 
 
 ## How to Run Quatro
 
