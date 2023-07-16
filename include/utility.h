@@ -168,34 +168,5 @@ POINT_CLOUD_REGISTER_POINT_STRUCT (PointXYZIRPYT,
 
 typedef PointXYZIRPYT  PointTypePose;
 
-void setCorrespondenceMarker(const pcl::PointCloud<PointType>& src_matched, const pcl::PointCloud<PointType>& tgt_matched,
-                             visualization_msgs::Marker& marker, float thickness=0.1, std::vector<float> rgb_color={0.0, 0.0, 0.0}, int id=0){
-    if (!marker.points.empty()) marker.points.clear();
-    marker.header.frame_id = "map";
-    marker.header.stamp = ros::Time();
-    marker.ns = "my_namespace";
-    marker.id = id; // To avoid overlap
-    marker.type = visualization_msgs::Marker::LINE_LIST;
-    marker.action = visualization_msgs::Marker::ADD;
-
-    marker.scale.x = thickness; // thickness
-    marker.color.r = rgb_color[0];
-    marker.color.g = rgb_color[1];
-    marker.color.b = rgb_color[2];
-    marker.color.a = 1.0; // Don't forget to set the alpha!
-
-    geometry_msgs::Point srcP;
-    geometry_msgs::Point tgtP;
-    assert(src_matched.size() == tgt_matched.size());
-    for (int idx = 0; idx < src_matched.size(); ++idx){
-        PointType sP = src_matched[idx];
-        PointType sT = tgt_matched[idx];
-        srcP.x = sP.x;     srcP.y = sP.y;     srcP.z = sP.z;
-        tgtP.x = sT.x;     tgtP.y = sT.y;     tgtP.z = sT.z;
-
-        marker.points.emplace_back(srcP);
-        marker.points.emplace_back(tgtP);
-    }
-}
 
 #endif
