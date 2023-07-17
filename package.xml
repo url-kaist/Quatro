@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
+
 <package format="2">
+
   <name>quatro</name>
-  <version>0.0.0</version>
-  <description>Robust global registration</description>
+  <version>1.0.0</version>
+  <description>quatro</description>
 
   <maintainer email="eungchang_mason@kaist.ac.kr">Eungchang Mason Lee</maintainer>
   <maintainer email="shapelim@kaist.ac.kr">Hyungtae Lim</maintainer>
 
-  <license>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License</license>
+  <license>GPL3</license>
 
   <buildtool_depend>catkin</buildtool_depend>
 

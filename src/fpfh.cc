@@ -6,9 +6,9 @@
  * See LICENSE for the license information
  */
 
-#include "teaser_utils/fpfh.h"
 #include <pcl/features/normal_3d.h>
-#include "teaser/utils.h"
+#include <teaser/fpfh.h>
+#include <teaser/utils.h>
 
 
 teaser::FPFHCloudPtr teaser::FPFHEstimation::computeFPFHFeatures(
@@ -24,7 +24,7 @@ teaser::FPFHCloudPtr teaser::FPFHEstimation::computeFPFHFeatures(
   }
 
   // Estimate normals
-  pcl::NormalEstimationOMP<pcl::PointXYZ, pcl::Normal> normalEstimation;
+  pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normalEstimation;
   normalEstimation.setInputCloud(pcl_input_cloud);
   normalEstimation.setRadiusSearch(normal_search_radius);
   pcl::search::KdTree<pcl::PointXYZ>::Ptr kdtree(new pcl::search::KdTree<pcl::PointXYZ>);
@@ -40,41 +40,6 @@ teaser::FPFHCloudPtr teaser::FPFHEstimation::computeFPFHFeatures(
 
   return descriptors;
 }
-
-teaser::FPFHCloudPtr teaser::FPFHEstimation::computeFPFHFeatures(                       // setFeaturePair에 쓰임
-        const teaser::PointCloud& input_cloud, pcl::PointCloud<pcl::Normal>& normals,
-        double normal_search_radius, double fpfh_search_radius) {
-
-    // Intermediate variables
-    pcl::PointCloud<pcl::Normal>::Ptr ptr_normals(new pcl::PointCloud<pcl::Normal>);
-    teaser::FPFHCloudPtr descriptors(new pcl::PointCloud<pcl::FPFHSignature33>());
-    pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    for (auto& i : input_cloud) {
-        pcl::PointXYZ p(i.x, i.y, i.z);
-        pcl_input_cloud->push_back(p);
-    }
-
-    // Estimate normals
-    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normalEstimation;
-    normalEstimation.setInputCloud(pcl_input_cloud);
-    normalEstimation.setRadiusSearch(normal_search_radius);
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr kdtree(new pcl::search::KdTree<pcl::PointXYZ>);
-    normalEstimation.setSearchMethod(kdtree);
-    normalEstimation.compute(*ptr_normals);
-
-    normals = * ptr_normals;
-
-    // Estimate FPFH
-    setInputCloud(pcl_input_cloud);
-    setInputNormals(ptr_normals);
-    setSearchMethod(kdtree);
-    setRadiusSearch(fpfh_search_radius);
-    compute(*descriptors);
-
-    return descriptors;
-}
-
-
 
 void teaser::FPFHEstimation::setInputCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud) {
   fpfh_estimation_->setInputCloud(input_cloud);

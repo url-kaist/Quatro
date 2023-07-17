@@ -10,10 +10,48 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <flann/flann.hpp>
-#include "teaser_utils/feature_matcher.h"
+
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+
+#include <teaser/matcher.h>
+#include <teaser/geometry.h>
 
 namespace teaser {
 
+std::vector<std::pair<int, int>> Matcher::calculateCorrespondences(
+    teaser::PointCloud& source_points, teaser::PointCloud& target_points,
+    teaser::FPFHCloud& source_features, teaser::FPFHCloud& target_features, bool use_absolute_scale,
+    bool use_crosscheck, bool use_tuple_test, float tuple_scale) {
+
+  Feature cloud_features;
+  pointcloud_.push_back(source_points);
+  pointcloud_.push_back(target_points);
+
+  // It compute the global_scale_ required to set correctly the search radius
+  normalizePoints(use_absolute_scale);
+
+  for (auto& f : source_features) {
+    Eigen::VectorXf fpfh(33);
+    for (int i = 0; i < 33; i++)
+      fpfh(i) = f.histogram[i];
+    cloud_features.push_back(fpfh);
+  }
+  features_.push_back(cloud_features);
+
+  cloud_features.clear();
+  for (auto& f : target_features) {
+    Eigen::VectorXf fpfh(33);
+    for (int i = 0; i < 33; i++)
+      fpfh(i) = f.histogram[i];
+    cloud_features.push_back(fpfh);
+  }
+  features_.push_back(cloud_features);
+
+  advancedMatching(use_crosscheck, use_tuple_test, tuple_scale);
+
+  return corres_;
+}
 
 void Matcher::normalizePoints(bool use_absolute_scale) {
   int num = 2;
