@@ -1,6 +1,7 @@
 #include <quatro/quatro_module.h>
 
-quatro::quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const double noise_bound, const double &rot_gnc_fact, const double &rot_cost_thr, const int &rot_max_iter, const bool &estimat_scale)
+template <typename PointType>
+quatro<PointType>::quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const double noise_bound, const double &rot_gnc_fact, const double &rot_cost_thr, const int &rot_max_iter, const bool &estimat_scale)
 {
 	m_normal_radius = fpfh_normal_radi;
 	m_fpfh_radius = fpfh_radi;
@@ -12,8 +13,8 @@ quatro::quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const do
 	set_params();
 }
 
-template <typename T>
-teaser::PointCloud quatro::pcl_to_teaser_pcl(const pcl::PointCloud<T> &cloud_in)
+template <typename PointType>
+teaser::PointCloud quatro<PointType>::pcl_to_teaser_pcl(const pcl::PointCloud<PointType> &cloud_in)
 {
 	teaser::PointCloud t_pcl_out_;
 	if (cloud_in.size() > 0 ) t_pcl_out_.reserve(cloud_in.size());
@@ -24,7 +25,8 @@ teaser::PointCloud quatro::pcl_to_teaser_pcl(const pcl::PointCloud<T> &cloud_in)
 	return t_pcl_out_;
 }
 
-void quatro::set_params()
+template <typename PointType>
+void quatro<PointType>::set_params()
 {
 	m_quatro_params.noise_bound = m_noise_bound;
 	m_quatro_params.estimate_scaling = m_estimate_scale;
@@ -38,8 +40,8 @@ void quatro::set_params()
 	return;
 }
 
-template <typename T>
-Eigen::Matrix4d quatro::align(const pcl::PointCloud<T> &src, const pcl::PointCloud<T> &dst, bool &if_valid)
+template <typename PointType>
+Eigen::Matrix4d quatro<PointType>::align(const pcl::PointCloud<PointType> &src, const pcl::PointCloud<PointType> &dst, bool &if_valid)
 {
 	Eigen::Matrix4d out_tf_ = Eigen::Matrix4d::Identity();
 
@@ -64,3 +66,8 @@ Eigen::Matrix4d quatro::align(const pcl::PointCloud<T> &src, const pcl::PointClo
 
 	return out_tf_;
 }
+
+
+//manual instatiations
+template class quatro<pcl::PointXYZ>;
+template class quatro<pcl::PointXYZI>;

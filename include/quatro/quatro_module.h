@@ -17,6 +17,7 @@
 using namespace std;
 
 //////////////////////////////////////////////////////
+template <typename PointType>
 class quatro
 {
 	private:
@@ -28,12 +29,10 @@ class quatro
 	public:
 		quatro(){};
 		quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const double noise_bound, const double &rot_gnc_fact, const double &rot_cost_thr, const int &rot_max_iter, const bool &estimat_scale);
-		template <typename T>
-		Eigen::Matrix4d align(const pcl::PointCloud<T> &src, const pcl::PointCloud<T> &dst, bool &if_valid);
+		Eigen::Matrix4d align(const pcl::PointCloud<PointType> &src, const pcl::PointCloud<PointType> &dst, bool &if_valid);
 	private:
 		void set_params();
-		template <typename T>
-		teaser::PointCloud pcl_to_teaser_pcl(const pcl::PointCloud<T> &cloud_in);
+		teaser::PointCloud pcl_to_teaser_pcl(const pcl::PointCloud<PointType> &cloud_in);
 };
 
 

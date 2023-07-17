@@ -42,9 +42,10 @@
     4. Use in the source file of your wanted package as:
         ```c++
         #include <quatro/quatro_module.h>
+        using quatro_point_type = pcl::PointXYZI; //can be changed
 
-        shared_ptr<quatro> m_quatro_handler = nullptr;
-        m_quatro_handler = std::make_shared<quatro>(fpfh_normal_radius_, fpfh_radius_, noise_bound_, rot_gnc_factor_, rot_cost_diff_thr_, quatro_max_iter_, quatro_max_iter_); //refer https://github.com/engcang/FAST-LIO-SAM-QN/blob/master/fast_lio_sam_qn/config/config.yaml#L28
+        shared_ptr<quatro<quatro_point_type>> m_quatro_handler = nullptr;
+        m_quatro_handler = std::make_shared<quatro<quatro_point_type>>(fpfh_normal_radius_, fpfh_radius_, noise_bound_, rot_gnc_factor_, rot_cost_diff_thr_, quatro_max_iter_, quatro_max_iter_); //refer https://github.com/engcang/FAST-LIO-SAM-QN/blob/master/fast_lio_sam_qn/config/config.yaml#L28
 
         ////// use
         pcl::PointCloud<pcl::PointXYZI> src_; //this should be not empty but the real data
