@@ -1,3 +1,5 @@
+#include <quatro/quatro_module.h>
+
 quatro::quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const double noise_bound, const double &rot_gnc_fact, const double &rot_cost_thr, const int &rot_max_iter, const bool &estimat_scale)
 {
 	m_normal_radius = fpfh_normal_radi;
@@ -16,7 +18,7 @@ teaser::PointCloud quatro::pcl_to_teaser_pcl(const pcl::PointCloud<T> &cloud_in)
 	if (cloud_in.size() > 0 ) t_pcl_out_.reserve(cloud_in.size());
   for (size_t i = 0; i < cloud_in.size(); ++i)
   {
-    tgt_cloud.push_back({cloud_in.points[i].x, cloud_in.points[i].y, cloud_in.points[i].z});
+    t_pcl_out_.push_back({cloud_in.points[i].x, cloud_in.points[i].y, cloud_in.points[i].z});
   }
 	return t_pcl_out_;
 }

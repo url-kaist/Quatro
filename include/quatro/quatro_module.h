@@ -31,6 +31,7 @@ class quatro
 		bool m_estimate_scale = false;
 		teaser::RobustRegistrationSolver::Params m_quatro_params;
 	public:
+		quatro(){};
 		quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const double noise_bound, const double &rot_gnc_fact, const double &rot_cost_thr, const int &rot_max_iter, const bool &estimat_scale);
 		template <typename T>
 		Eigen::Matrix4d align(const pcl::PointCloud<T> &src, const pcl::PointCloud<T> &dst);
