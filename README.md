@@ -23,7 +23,7 @@
 + Refer - [here](https://github.com/engcang/FAST-LIO-SAM-QN)
 + Or, refer the example as follows:
     1. Make sure that you have all dependencies
-    2. Git clone and catkin build this repository
+    2. Git clone and `catkin build` this repository
     3. In the `CMakeLists.txt` of your wanted package, import and link `teaserpp`
         ```CMake
         find_package(teaserpp REQUIRED) #Important
