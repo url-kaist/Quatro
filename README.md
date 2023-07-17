@@ -24,23 +24,37 @@
 + Or, refer the example as follows:
     1. Make sure that you have all dependencies
     2. Git clone and `catkin build` this repository
-    3. In the `CMakeLists.txt` of your wanted package, import and link `teaserpp`
+    3. In the `CMakeLists.txt` of your wanted package, import `quatro` as a component of `catkin`
         ```CMake
-        find_package(teaserpp REQUIRED) #Important
+        find_package(catkin REQUIRED COMPONENTS
+            ...
+            quatro #Include here
+            ...
+        )
         include_directories(
-            include
-            ${CMAKE_SOURCE_DIR}/third_party/Quatro" #directory can be different depending on where you cloned/added this repository
+            ...
+            ${catkin_INCLUDE_DIRS} #Header files are included in catkin_INCLUDE_DIRS
+            ...
         )
         add_library(some_library src/some_src.cpp)
-        target_link_libraries(some_library ... teaserpp::teaser_registration teaserpp::teaser_io) #Libraries should be included like this way and headers are included automatically
+        target_link_libraries(some_library ${catkin_LIBRARIES}) #Libraries are included in catkin_LIBRARIES
         ```
     4. Use in the source file of your wanted package as:
         ```c++
-        #include "quatro.hpp"
-        quatro.setInputSource(srcMatched);
-        quatro.setInputTarget(tgtMatched);
-        Eigen::Matrix4d output;
-        quatro.computeTransformation(output);
+        #include <quatro/quatro_module.h>
+
+        shared_ptr<quatro> m_quatro_handler = nullptr;
+        m_quatro_handler = std::make_shared<quatro>(fpfh_normal_radius_, fpfh_radius_, noise_bound_, rot_gnc_factor_, rot_cost_diff_thr_, quatro_max_iter_, quatro_max_iter_); //refer https://github.com/engcang/FAST-LIO-SAM-QN/blob/master/fast_lio_sam_qn/config/config.yaml#L28
+
+        ////// use
+        pcl::PointCloud<pcl::PointXYZI> src_; //this should be not empty but the real data
+        pcl::PointCloud<pcl::PointXYZI> dst_; //this should be not empty but the real data
+        bool if_valid_;
+        Eigen::Matrix4d output_tf_ = m_quatro_handler->align(src_, dst_, if_valid_);
+        if (if_valid_)
+        {
+            //do something wiht output_tf_
+        }
         ```
 
 ### License

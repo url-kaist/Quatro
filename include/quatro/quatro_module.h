@@ -1,23 +1,18 @@
 #ifndef QUATRO_MODULE_H
 #define QUATRO_MODULE_H
 
-///// c++ common headers
-#include <chrono>
-#include <iostream>
-#include <random>
+
 ///// Eigen
 #include <Eigen/Core>
 ///// PCL
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 ///// imported headers - teaser
-#include <teaser/ply_io.h>
 #include <teaser/registration.h>
 #include <teaser/geometry.h>
 #include <teaser/utils.h>
 ///// this package header
 #include <quatro/matcher.h>
-
 
 using namespace std;
 
@@ -34,9 +29,9 @@ class quatro
 		quatro(){};
 		quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const double noise_bound, const double &rot_gnc_fact, const double &rot_cost_thr, const int &rot_max_iter, const bool &estimat_scale);
 		template <typename T>
-		Eigen::Matrix4d align(const pcl::PointCloud<T> &src, const pcl::PointCloud<T> &dst);
+		Eigen::Matrix4d align(const pcl::PointCloud<T> &src, const pcl::PointCloud<T> &dst, bool &if_valid);
 	private:
-		void reset_params();
+		void set_params();
 		template <typename T>
 		teaser::PointCloud pcl_to_teaser_pcl(const pcl::PointCloud<T> &cloud_in);
 };
