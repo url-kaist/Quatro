@@ -14,8 +14,8 @@
     ```shell
     git clone https://github.com/MIT-SPARK/TEASER-plusplus.git
     cd TEASER-plusplus && mkdir build && cd build
-    cmake .. && make -j16
-    sudo make install
+    cmake .. -DENABLE_DIAGNOSTIC_PRINT=OFF
+    sudo make install -j16
     sudo ldconfig
     ```
 
