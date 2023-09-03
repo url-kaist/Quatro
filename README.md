@@ -20,10 +20,14 @@
     ```
 + (Optional, but recommended) `oneTBB` for parallelization and ***x10 faster computation***
     ```shell
+    # Note the directory
+    cd ~/your_workspace/src
     git clone https://github.com/oneapi-src/oneTBB
-    cd oneTBB && mkdir build && cd build
-    cmake .. -DTBB_TEST=OFF -DCMAKE_BUILD_TYPE=Release
-    make -j16 && sudo make install
+    cd oneTBB && mkdir build installed
+    cd build
+    # Note the directory
+    cmake .. -DCMAKE_INSTALL_PREFIX=../installed -DTBB_TEST=OFF -DCMAKE_BUILD_TYPE=Release
+    make -j16 && make install
     ```
 
 ### How to build
