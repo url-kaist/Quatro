@@ -1,16 +1,16 @@
 # Quatro 
 + This branch is for being used as a third party module in other packages
-+ Quatro is from [here, official repo](https://github.com/url-kaist/Quatro) and [here, author's module repository](https://github.com/LimHyungTae/quatro-cpp-fpfh/)
-    + Quatro is for the robust and global registration of pointclouds to avoid degeneracy in urban environments
++ `Quatro` is from [here, official repo](https://github.com/url-kaist/Quatro) and [here, author's module repository](https://github.com/LimHyungTae/quatro-cpp-fpfh/)
+    + `Quatro` is for the robust and global registration of pointclouds to avoid degeneracy in urban environments
 
 
 ### Dependencies
-+ PCL >= 1.8
-+ C++ >= 17
-+ Boost >= 1.54
-+ Eigen >= 3.2
-+ OpenMP >= 4.5
-+ Teaser++ (tested with commit ver `e415c0d`, May 22, 2023)
++ `PCL` >= 1.8
++ `C++` >= 17
++ `Boost` >= 1.54
++ `Eigen` >= 3.2
++ `OpenMP` >= 4.5
++ `Teaser++` (tested with commit ver `e415c0d`, May 22, 2023)
     ```shell
     git clone https://github.com/MIT-SPARK/TEASER-plusplus.git
     cd TEASER-plusplus && mkdir build && cd build
@@ -18,13 +18,35 @@
     sudo make install -j16
     sudo ldconfig
     ```
++ (Optional, but recommended) `oneTBB` for parallelization and ***x10 faster computation***
+    ```shell
+    git clone https://github.com/oneapi-src/oneTBB
+    cd oneTBB && mkdir build && cd build
+    cmake .. -DTBB_TEST=OFF -DCMAKE_BUILD_TYPE=Release
+    make -j16 && sudo make install
+    ```
+
+### How to build
++ Git clone and `catkin build` this repository
+```shell
+cd ~/your_workspace/src
+git clone https://github.com/engcang/Quatro
+cd ..
+catkin build
+```
++ (Optional, but recommended) with `oneTBB`
+```shell
+cd ~/your_workspace/src
+git clone https://github.com/engcang/Quatro
+cd ..
+catkin build -DQUATRO_TBB=ON
+```
 
 ### Use case
 + Refer - [here](https://github.com/engcang/FAST-LIO-SAM-QN)
 + Or, refer the example as follows:
-    1. Make sure that you have all dependencies
-    2. Git clone and `catkin build` this repository
-    3. In the `CMakeLists.txt` of your wanted package, import `quatro` as a component of `catkin`
+    1. Make sure that you have all dependencies and built the `quatro` properly with `catkin build` as above
+    2. In the `CMakeLists.txt` of your wanted package, import `quatro` as a component of `catkin`
         ```CMake
         find_package(catkin REQUIRED COMPONENTS
             ...

@@ -17,6 +17,10 @@
 #include <teaser/matcher.h>
 #include <teaser/geometry.h>
 
+#ifdef TBB_EN
+#include "oneapi/tbb.h"
+#endif
+
 namespace teaser {
 
 std::vector<std::pair<int, int>> Matcher::calculateCorrespondences(
@@ -147,9 +151,43 @@ void Matcher::advancedMatching(bool use_crosscheck, bool use_tuple_test, float t
   std::vector<std::pair<int, int>> corres_ij;
   std::vector<std::pair<int, int>> corres_ji;
 
-  ///////////////////////////
-  /// INITIAL MATCHING
-  ///////////////////////////
+  #ifdef TBB_EN
+  //////////////// Multi-Threading - flann
+  std::vector<int> i_to_j_multi_flann(nPti, -1);
+  std::vector<int> j_to_i_multi_flann(nPtj, -1);
+
+  std::vector<std::pair<int, int>> corres_multi_flann;
+
+  std::vector<int> j_idx(nPtj);
+  std::iota(j_idx.begin(), j_idx.end(), 0);
+  
+  tbb::parallel_for_each(j_idx.begin(), j_idx.end(), [&](int j){
+    searchKDTree(&feature_tree_i, features_[fj][j], corres_K, dis, 1);
+    int ji = corres_K[0];
+
+    if(i_to_j_multi_flann[ji] == -1){
+      searchKDTree(&feature_tree_j, features_[fi][ji], corres_K, dis, 1);
+      int jij = corres_K[0];
+      i_to_j_multi_flann[ji] = jij;
+    }
+
+    j_to_i_multi_flann[j] = ji;
+    
+  });
+
+  for(int j=0; j<nPtj; j++){
+    int ji = j_to_i_multi_flann[j];
+    if(j == i_to_j_multi_flann[ji]){
+      corres_multi_flann.emplace_back(std::pair<int, int>(ji, j));
+    }
+  }
+  corres = corres_multi_flann;
+  corres_cross = corres_multi_flann;
+  #else
+  ///////////// Single-threading - flann
+  /////////////////////////
+  // INITIAL MATCHING
+  /////////////////////////
   std::vector<int> i_to_j(nPti, -1);
   for (int j = 0; j < nPtj; j++) {
     searchKDTree(&feature_tree_i, features_[fj][j], corres_K, dis, 1);
@@ -216,6 +254,7 @@ void Matcher::advancedMatching(bool use_crosscheck, bool use_tuple_test, float t
   } else {
     std::cout << "Skipping Cross Check." << std::endl;
   }
+  #endif
 
   ///////////////////////////
   /// TUPLE CONSTRAINT

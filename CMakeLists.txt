@@ -27,6 +27,15 @@ endif()
 if(teaserpp_FOUND)
   message(WARNING "teaserpp found")
 endif()
+if (QUATRO_TBB)
+  set (TBB_FIND_RELEASE_ONLY TRUE)
+  find_package(TBB REQUIRED)
+  if (TBB_FOUND)
+    message(WARNING "TBB_VER: ${TBB_VERSION}")
+    add_definitions(-DTBB_EN)
+  endif()
+endif()
+
 find_package(catkin REQUIRED)
 catkin_package( #this automatically adds/installs the results of build
   INCLUDE_DIRS include
@@ -45,4 +54,8 @@ include_directories(
 ###########
 ### main
 add_library(${PROJECT_NAME} src/fpfh.cc src/matcher.cc src/quatro_module.cc)
-target_link_libraries(${PROJECT_NAME} ${OpenMP_LIBS} ${EIGEN3_LIBS} ${PCL_LIBRARIES} teaserpp::teaser_registration teaserpp::teaser_io)
+if (QUATRO_TBB)
+  target_link_libraries(${PROJECT_NAME} ${OpenMP_LIBS} ${EIGEN3_LIBS} ${PCL_LIBRARIES} teaserpp::teaser_registration teaserpp::teaser_io tbb)
+else()
+  target_link_libraries(${PROJECT_NAME} ${OpenMP_LIBS} ${EIGEN3_LIBS} ${PCL_LIBRARIES} teaserpp::teaser_registration teaserpp::teaser_io)
+endif()
