@@ -52,7 +52,7 @@ Eigen::Matrix4d quatro<PointType>::align(const pcl::PointCloud<PointType> &src, 
 	teaser::FPFHCloudPtr scene_descriptors_ = fpfh_.computeFPFHFeatures(tgt_cloud_, m_normal_radius, m_fpfh_radius);
 
 	teaser::Matcher matcher_;
-	std::vector<std::pair<int, int>> correspondences_ = matcher_.calculateCorrespondences(src_cloud_, tgt_cloud_, *obj_descriptors_, *scene_descriptors_, false, true, false, 0.95);
+	std::vector<std::pair<int, int>> correspondences_ = matcher_.calculateCorrespondences(src_cloud_, tgt_cloud_, *obj_descriptors_, *scene_descriptors_, false, true, true, 0.95);
 
 	// set_params(); //TODO: check if this should be called each time
 	teaser::RobustRegistrationSolver Quatro_(m_quatro_params);
