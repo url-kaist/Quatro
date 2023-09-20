@@ -71,7 +71,7 @@ catkin build -DQUATRO_TBB=ON
         using QuatroPointType = pcl::PointXYZI; //can be changed
 
         shared_ptr<quatro<QuatroPointType>> m_quatro_handler = nullptr;
-        m_quatro_handler = std::make_shared<quatro<QuatroPointType>>(fpfh_normal_radius_, fpfh_radius_, noise_bound_, rot_gnc_factor_, rot_cost_diff_thr_, quatro_max_iter_, quatro_max_iter_); //refer https://github.com/engcang/FAST-LIO-SAM-QN/blob/master/fast_lio_sam_qn/config/config.yaml#L28
+        m_quatro_handler = std::make_shared<quatro<QuatroPointType>>(fpfh_normal_radius_, fpfh_radius_, noise_bound_, rot_gnc_factor_, rot_cost_diff_thr_, quatro_max_iter_, estimat_scale_); //refer https://github.com/engcang/FAST-LIO-SAM-QN/blob/master/fast_lio_sam_qn/config/config.yaml#L28
 
         ////// use
         pcl::PointCloud<QuatroPointType> src_; //this should be not empty but the real data

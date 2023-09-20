@@ -52,18 +52,24 @@ Eigen::Matrix4d quatro<PointType>::align(const pcl::PointCloud<PointType> &src, 
 	teaser::FPFHCloudPtr scene_descriptors_ = fpfh_.computeFPFHFeatures(tgt_cloud_, m_normal_radius, m_fpfh_radius);
 
 	teaser::Matcher matcher_;
-	std::vector<std::pair<int, int>> correspondences_ = matcher_.calculateCorrespondences(src_cloud_, tgt_cloud_, *obj_descriptors_, *scene_descriptors_, false, true, true, 0.95);
+	std::vector<std::pair<int, int>> correspondences_ = matcher_.calculateCorrespondences(src_cloud_, tgt_cloud_, *obj_descriptors_, *scene_descriptors_, false, true, true, 0.95); //false true true important~
 
-	// set_params(); //TODO: check if this should be called each time
-	teaser::RobustRegistrationSolver Quatro_(m_quatro_params);
+	if (correspondences_.empty()) // no correspondences!!!
+	{
+		if_valid = false;
+	}
+	else
+	{
+		// set_params(); //TODO: check if this should be called each time
+		teaser::RobustRegistrationSolver Quatro_(m_quatro_params);
 
-	Quatro_.solve(src_cloud_, tgt_cloud_, correspondences_);
-	teaser::RegistrationSolution solution_by_quatro_ = Quatro_.getSolution();
-	if_valid = solution_by_quatro_.valid; //if the result is valid or not
-	
-	out_tf_.block<3, 3>(0, 0) = solution_by_quatro_.rotation;
-	out_tf_.block<3, 1>(0, 3) = solution_by_quatro_.translation;
-
+		Quatro_.solve(src_cloud_, tgt_cloud_, correspondences_);
+		teaser::RegistrationSolution solution_by_quatro_ = Quatro_.getSolution();
+		if_valid = solution_by_quatro_.valid; //if the result is valid or not
+		
+		out_tf_.block<3, 3>(0, 0) = solution_by_quatro_.rotation;
+		out_tf_.block<3, 1>(0, 3) = solution_by_quatro_.translation;
+	}
 	return out_tf_;
 }
 
