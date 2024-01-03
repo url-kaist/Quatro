@@ -12,7 +12,7 @@ if(OPENMP_FOUND) #The best way to set proper compiler settings for using OpenMP 
 else(OPENMP_FOUND)
   message("ERROR: OpenMP could not be found.")
 endif(OPENMP_FOUND)
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -Wextra ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall ${CMAKE_CXX_FLAGS}")
 
 ### get packages
 find_package(Eigen3 REQUIRED)
@@ -30,12 +30,19 @@ endif()
 
 #### for tbb
 if(QUATRO_TBB)
-  set(TBB_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/../oneTBB/installed/include")
-  set(TBB_LIBRARY_DIR "${CMAKE_SOURCE_DIR}/../oneTBB/installed/lib")
   message(WARNING "Quatro with TBB")
+  list(APPEND CMAKE_MODULE_PATH /usr/local/include /usr/include)
+  find_library(TBB_LIBRARY tbb HINTS /usr/lib /usr/local/lib)
+  message(WARNING "TBB FOUND, ${TBB_LIBRARY}")
   add_definitions(-DTBB_EN)
-  include_directories(${TBB_INCLUDE_DIR})
-  link_directories(${TBB_LIBRARY_DIR})
+  include(ProcessorCount)
+  ProcessorCount(N)
+  message(WARNING "Processer number: ${N}")
+  if(N GREATER 4)
+    add_definitions(-DTBB_PROC_NUM=${N})
+  else()
+    add_definitions(-DTBB_PROC_NUM=1)
+  endif()
 endif()
 
 find_package(catkin REQUIRED)
@@ -57,7 +64,7 @@ include_directories(
 ### main
 add_library(${PROJECT_NAME} src/fpfh.cc src/matcher.cc src/quatro_module.cc)
 if (QUATRO_TBB)
-  target_link_libraries(${PROJECT_NAME} ${OpenMP_LIBS} ${EIGEN3_LIBS} ${PCL_LIBRARIES} teaserpp::teaser_registration teaserpp::teaser_io tbb)
+  target_link_libraries(${PROJECT_NAME} ${OpenMP_LIBS} ${EIGEN3_LIBS} ${PCL_LIBRARIES} teaserpp::teaser_registration teaserpp::teaser_io ${TBB_LIBRARY})
 else()
   target_link_libraries(${PROJECT_NAME} ${OpenMP_LIBS} ${EIGEN3_LIBS} ${PCL_LIBRARIES} teaserpp::teaser_registration teaserpp::teaser_io)
 endif()

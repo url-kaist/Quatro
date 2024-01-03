@@ -18,16 +18,9 @@
     sudo make install -j16
     sudo ldconfig
     ```
-+ (Optional, but recommended) `oneTBB` for parallelization and ***x10 faster computation***
++ (Optional, but recommended) `tbb` for parallelization and ***x10 faster computation in matching***
     ```shell
-    # Note the directory
-    cd ~/your_workspace/src
-    git clone https://github.com/oneapi-src/oneTBB
-    cd oneTBB && mkdir build installed
-    cd build
-    # Note the directory
-    cmake .. -DCMAKE_INSTALL_PREFIX=../installed -DTBB_TEST=OFF -DCMAKE_BUILD_TYPE=Release
-    make -j16 && make install
+    sudo apt install libtbb-dev
     ```
 
 ### How to build
@@ -38,7 +31,7 @@ git clone https://github.com/engcang/Quatro
 cd ..
 catkin build
 ```
-+ (Optional, but recommended) with `oneTBB`
++ (Optional, but recommended) with `tbb`
 ```shell
 cd ~/your_workspace/src
 git clone https://github.com/engcang/Quatro
@@ -71,7 +64,10 @@ catkin build -DQUATRO_TBB=ON
         using QuatroPointType = pcl::PointXYZI; //can be changed
 
         shared_ptr<quatro<QuatroPointType>> m_quatro_handler = nullptr;
-        m_quatro_handler = std::make_shared<quatro<QuatroPointType>>(fpfh_normal_radius_, fpfh_radius_, noise_bound_, rot_gnc_factor_, rot_cost_diff_thr_, quatro_max_iter_, estimat_scale_); //refer https://github.com/engcang/FAST-LIO-SAM-QN/blob/master/fast_lio_sam_qn/config/config.yaml#L28
+        m_quatro_handler = std::make_shared<quatro<QuatroPointType>>(fpfh_normal_radius_, 
+                            fpfh_radius_, noise_bound_, rot_gnc_factor_, rot_cost_diff_thr_,
+                            quatro_max_iter_, estimat_scale_, optimize_matching, 
+                            distance_threshold, max_correspondences); //refer https://github.com/engcang/FAST-LIO-SAM-QN/blob/master/fast_lio_sam_qn/config/config.yaml#L28
 
         ////// use
         pcl::PointCloud<QuatroPointType> src_; //this should be not empty but the real data
@@ -104,4 +100,12 @@ catkin build -DQUATRO_TBB=ON
     year={2022},
     pages={Accepted. To appear}
     }
+```
+```tex
+@article{lim2023quatro-plusplus,
+  author    = {Lim, Hyungtae and Kim, Beomsoo and Kim, Daebeom and Lee, Eungchang and Myung, Hyun},
+  title     = {Quatro++: Robust Global Registration Exploiting Ground Segmentation for Loop Closing in LiDAR SLAM},
+  booktitle = {International Journal of Robotics Research},
+  year      = {2023},
+}
 ```

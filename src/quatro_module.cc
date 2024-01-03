@@ -1,7 +1,9 @@
 #include <quatro/quatro_module.h>
 
 template <typename PointType>
-quatro<PointType>::quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const double noise_bound, const double &rot_gnc_fact, const double &rot_cost_thr, const int &rot_max_iter, const bool &estimat_scale)
+quatro<PointType>::quatro(const double &fpfh_normal_radi, const double &fpfh_radi, const double noise_bound, const double &rot_gnc_fact,
+							const double &rot_cost_thr, const int &rot_max_iter, const bool &estimat_scale,
+							const bool& use_optimized_matching, const double& distance_threshold, const int& num_max_corres)
 {
 	m_normal_radius = fpfh_normal_radi;
 	m_fpfh_radius = fpfh_radi;
@@ -10,6 +12,9 @@ quatro<PointType>::quatro(const double &fpfh_normal_radi, const double &fpfh_rad
 	m_rotation_cost_thr = rot_cost_thr;
 	m_rotation_max_iter = rot_max_iter;
 	m_estimate_scale = estimat_scale;
+	m_use_optimized_matching = use_optimized_matching;
+	m_distance_threshold = distance_threshold;
+	m_num_max_corres = num_max_corres;	
 	set_params();
 }
 
@@ -52,7 +57,8 @@ Eigen::Matrix4d quatro<PointType>::align(const pcl::PointCloud<PointType> &src, 
 	teaser::FPFHCloudPtr scene_descriptors_ = fpfh_.computeFPFHFeatures(tgt_cloud_, m_normal_radius, m_fpfh_radius);
 
 	teaser::Matcher matcher_;
-	std::vector<std::pair<int, int>> correspondences_ = matcher_.calculateCorrespondences(src_cloud_, tgt_cloud_, *obj_descriptors_, *scene_descriptors_, false, true, true, 0.95); //false true true important~
+	std::vector<std::pair<int, int>> correspondences_ = matcher_.calculateCorrespondences(src_cloud_, tgt_cloud_, *obj_descriptors_, *scene_descriptors_, 
+														false, true, true, 0.95, m_use_optimized_matching, m_distance_threshold, m_num_max_corres);
 
 	if (correspondences_.empty()) // no correspondences!!!
 	{
@@ -60,7 +66,6 @@ Eigen::Matrix4d quatro<PointType>::align(const pcl::PointCloud<PointType> &src, 
 	}
 	else
 	{
-		// set_params(); //TODO: check if this should be called each time
 		teaser::RobustRegistrationSolver Quatro_(m_quatro_params);
 
 		Quatro_.solve(src_cloud_, tgt_cloud_, correspondences_);
