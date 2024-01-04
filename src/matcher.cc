@@ -144,9 +144,8 @@ void Matcher::advancedMatching(const bool& use_crosscheck, const bool& use_tuple
   buildKDTree(features_[fj], &feature_tree_j);
 #endif
 
-  std::vector<int> corres_K, corres_K2;
-  std::vector<float> dis;
-  std::vector<int> ind;
+  std::vector<int> corres_K(1, 0);
+  std::vector<float> dis(1, 0.0);
 
   std::vector<std::pair<int, int>> corres;
   std::vector<std::pair<int, int>> corres_cross;
@@ -378,9 +377,8 @@ void Matcher::optimizedMatching(const float& thr_dist, const int& num_max_corres
 #endif
   std::chrono::steady_clock::time_point end_build = std::chrono::steady_clock::now();
 
-  std::vector<int> corres_K;
-  std::vector<float> dis;
-  std::vector<int> ind;
+  std::vector<int> corres_K(1, 0);
+  std::vector<float> dis(1, 0.0);
 
   ///////////////////////////
   /// INITIAL MATCHING
@@ -400,7 +398,8 @@ void Matcher::optimizedMatching(const float& thr_dist, const int& num_max_corres
 #ifdef TBB_EN
   corres = tbb::parallel_reduce(
   // Range
-  tbb::blocked_range<size_t>(0, corres_K.size(), corres_K.size()/TBB_PROC_NUM*2),
+  // tbb::blocked_range<size_t>(0, corres_K.size(), corres_K.size()/TBB_PROC_NUM*2),
+  tbb::blocked_range<size_t>(0, corres_K.size()),
   // Identity
   empty_vector,
   // 1st lambda: Parallel computation
@@ -588,8 +587,6 @@ void Matcher::searchKDTree(Matcher::KDTree* tree, const T& input, std::vector<in
     query[i] = input(i);
   flann::Matrix<float> query_mat(&query[0], rows_t, dim);
 
-  indices.resize(rows_t * nn);
-  dists.resize(rows_t * nn);
   flann::Matrix<int> indices_mat(&indices[0], rows_t, nn);
   flann::Matrix<float> dists_mat(&dists[0], rows_t, nn);
 
