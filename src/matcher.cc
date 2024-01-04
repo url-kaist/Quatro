@@ -389,8 +389,8 @@ void Matcher::optimizedMatching(const float& thr_dist, const int& num_max_corres
   std::vector<int> i_to_j(nPti, -1);
   std::vector<std::pair<int, int>> empty_vector;
   empty_vector.reserve(corres_K.size());
-  std::vector<int> corres_K_for_i;
-  std::vector<float> dis_for_i;
+  std::vector<int> corres_K_for_i(1, 0);
+  std::vector<float> dis_for_i(1, 0.0);
 
   std::chrono::steady_clock::time_point begin_corr = std::chrono::steady_clock::now();
   std::vector<std::pair<int, int>> corres;
