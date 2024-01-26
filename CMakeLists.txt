@@ -52,6 +52,7 @@ include_directories(
         include
 )
 
+option(USE_SYSTEM_TBB "Use system pre-installed oneAPI/tbb" OFF)
 include(3rdparty/find_dependencies.cmake)
 
 file(DOWNLOAD https://urserver.kaist.ac.kr/publicdata/quatro/000540.bin ${CMAKE_CURRENT_LIST_DIR}/materials/000540.bin)
@@ -79,4 +80,5 @@ target_link_libraries(run_example
         ${catkin_LIBRARIES}
         stdc++fs
         pmc::pmc
+        TBB::tbb
         )

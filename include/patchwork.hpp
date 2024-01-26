@@ -24,7 +24,7 @@
 #define COLOR_RED 1.0    // red
 #define COLOR_GLOBALLY_TOO_HIGH_ELEVATION 0.8 // I'm not sure...haha
 
-int NOT_ASSIGNED = -2;
+int NOT_ASSIGNED_VALUE = -2;
 int FEW_POINTS = -1;
 int UPRIGHT_ENOUGH = 0; // cyan
 int FLAT_ENOUGH = 1; // green
@@ -191,7 +191,7 @@ public:
         int num_patches = patch_indices_.size();
         indices_.resize(num_patches);
         std::iota(indices_.begin(), indices_.end(), 0);
-        statuses_.assign(num_patches, NOT_ASSIGNED);
+        statuses_.assign(num_patches, NOT_ASSIGNED_VALUE);
         features_.resize(num_patches);
         regionwise_grounds_.resize(num_patches);
         regionwise_nongrounds_.resize(num_patches);
@@ -647,7 +647,7 @@ void PatchWork<PointT>::estimate_ground(
         const auto &regionwise_nonground = regionwise_nongrounds_[i];
         const auto status                = statuses_[i];
 
-        if (visualize_ && (status != FEW_POINTS && status != NOT_ASSIGNED)) {
+        if (visualize_ && (status != FEW_POINTS && status != NOT_ASSIGNED_VALUE)) {
             auto polygons = set_polygons(zone_idx, ring_idx, sector_idx, 3);
             polygons.header = poly_list_.header;
             poly_list_.polygons.emplace_back(polygons);
