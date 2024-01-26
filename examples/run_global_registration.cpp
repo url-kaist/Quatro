@@ -140,9 +140,13 @@ int main(int argc, char **argv) {
          * for speeding up the STEP 3 (feature extraction & matching),
          * redundant points, i.e. ground or bushes, are rejected
          */
+        
         patchwork.reset(new PatchWork<PointType>(&nh));
+        std::chrono::system_clock::time_point pw_start = std::chrono::system_clock::now();
         patchwork->estimate_ground(*(srcRaw), srcGround, *ptrSrcNonground, tSrc);
         patchwork->estimate_ground(*(tgtRaw), tgtGround, *ptrTgtNonground, tTgt);
+        std::chrono::duration<double> pw_sec = std::chrono::system_clock::now() - pw_start;
+        std::cout << setprecision(4) << "\033[1;32mPatchwork takes: " << pw_sec.count() << " sec.\033[0m" << std::endl;
 
         /***
          * STEP 3. Extract valid segment points by using image projection
