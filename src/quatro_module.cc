@@ -41,7 +41,7 @@ void quatro<PointType>::set_params()
 	m_quatro_params.cbar2 = 1; // cbar2: 'noise_bound_coeff' plays a role as an uncertainty multiplier and is used when estimating COTE 
 															//I.e. final noise bound is set to `noise_bound` * `noise_bound_coeff`
 	m_quatro_params.rotation_estimation_algorithm = teaser::RobustRegistrationSolver::ROTATION_ESTIMATION_ALGORITHM::QUATRO;
-	m_quatro_params.inlier_selection_mode == teaser::RobustRegistrationSolver::INLIER_SELECTION_MODE::PMC_HEU;
+	m_quatro_params.inlier_selection_mode = teaser::RobustRegistrationSolver::INLIER_SELECTION_MODE::PMC_HEU;
 	return;
 }
 
