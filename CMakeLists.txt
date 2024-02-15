@@ -45,6 +45,12 @@ if(QUATRO_TBB)
   endif()
 endif()
 
+#### for debug output
+if(QUATRO_DEBUG)
+  add_definitions(-DQUATRO_DEBUG)
+endif()
+
+### output as catkin package
 find_package(catkin REQUIRED)
 catkin_package( #this automatically adds/installs the results of build
   INCLUDE_DIRS include

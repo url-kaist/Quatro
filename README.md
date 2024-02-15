@@ -33,10 +33,11 @@ catkin build
 ```
 + (Optional, but recommended) with `tbb`
 ```shell
-cd ~/your_workspace/src
-git clone https://github.com/engcang/Quatro
-cd ..
 catkin build -DQUATRO_TBB=ON
+```
++ (Optional) to enable `std::cout` for debugging,
+```shell
+catkin build -DQUATRO_DEBUG=ON
 ```
 
 ### Use case

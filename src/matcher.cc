@@ -7,6 +7,9 @@
  */
 
 #include <quatro/matcher.h>
+#ifdef QUATRO_DEBUG
+#include <iostream>
+#endif
 
 namespace teaser {
 
@@ -42,7 +45,9 @@ std::vector<std::pair<int, int>> Matcher::calculateCorrespondences(
   features_.push_back(cloud_features);
 
   if (use_optimized_matching) {
+#ifdef QUATRO_DEBUG
     std::cout << "\033[1;32mUse optimized matching!\033[0m\n";
+#endif
     optimizedMatching(thr_dist, num_max_corres, tuple_scale);
   } else {
     advancedMatching(use_crosscheck, use_tuple_test, tuple_scale);
@@ -221,7 +226,9 @@ void Matcher::advancedMatching(const bool& use_crosscheck, const bool& use_tuple
   /// output : corres
   ///////////////////////////
   if (use_crosscheck) {
+#ifdef QUATRO_DEBUG
     std::cout << "CROSS CHECK" << std::endl;
+#endif
     // build data structure for cross check
     corres.clear();
     corres_cross.clear();
@@ -253,7 +260,9 @@ void Matcher::advancedMatching(const bool& use_crosscheck, const bool& use_tuple
       }
     }
   } else {
+#ifdef QUATRO_DEBUG
     std::cout << "Skipping Cross Check." << std::endl;
+#endif
   }
 #endif
 
@@ -263,7 +272,9 @@ void Matcher::advancedMatching(const bool& use_crosscheck, const bool& use_tuple
   /// output : corres
   ///////////////////////////
   if (use_tuple_test && tuple_scale != 0) {
+#ifdef QUATRO_DEBUG
     std::cout << "TUPLE CONSTRAINT" << std::endl;
+#endif
     srand(time(NULL));
     int rand0, rand1, rand2;
     int idi0, idi1, idi2;
@@ -321,7 +332,9 @@ void Matcher::advancedMatching(const bool& use_crosscheck, const bool& use_tuple
     for (size_t i = 0; i < corres_tuple.size(); ++i)
       corres.push_back(std::pair<int, int>(corres_tuple[i].first, corres_tuple[i].second));
   } else {
+#ifdef QUATRO_DEBUG
     std::cout << "Skipping Tuple Constraint." << std::endl;
+#endif
   }
 
   if (swapped) {
@@ -446,7 +459,9 @@ void Matcher::optimizedMatching(const float& thr_dist, const int& num_max_corres
   /// TUPLE TEST
   ///////////////////////////
   if (tuple_scale != 0) {
+#ifdef QUATRO_DEBUG
     std::cout << "TUPLE CONSTRAINT" << std::endl;
+#endif
     srand(time(NULL));
     int rand0, rand1, rand2;
     int idi0, idi1, idi2;
@@ -522,11 +537,14 @@ void Matcher::optimizedMatching(const float& thr_dist, const int& num_max_corres
       if (corres_.size() > num_max_corres) { break; }
     }
   } else {
+#ifdef QUATRO_DEBUG
     std::cout << "Skipping Tuple Constraint." << std::endl;
+#endif
   }
 
   std::chrono::steady_clock::time_point end_tuple_test = std::chrono::steady_clock::now();
   const int width = 25;
+#ifdef QUATRO_DEBUG
   std::cout << std::setw(width) << "[Build KdTree]: "
             << std::chrono::duration_cast<std::chrono::microseconds>(end_build - begin_build).count() /
                1000000.0 << " sec" << std::endl;
@@ -539,6 +557,7 @@ void Matcher::optimizedMatching(const float& thr_dist, const int& num_max_corres
   std::cout << std::setw(width) << "[Tuple test]: "
             << std::chrono::duration_cast<std::chrono::microseconds>(end_tuple_test - end_corr).count() /
                1000000.0 << " sec" << std::endl;
+#endif
 }
 
 template <typename T> void Matcher::buildKDTree(const std::vector<T>& data, Matcher::KDTree* tree) {
