@@ -1,140 +1,99 @@
 # Quatro 
++ This branch is for being used as a third party module in other packages
++ `Quatro` is from [here, official repo](https://github.com/url-kaist/Quatro) and [here, author's module repository](https://github.com/LimHyungTae/quatro-cpp-fpfh/)
+    + `Quatro` is for the robust and global registration of pointclouds to avoid degeneracy in urban environments
 
-Official page of *"A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments"*, which is accepted @ ICRA'22. **NOTE that this repository is the re-implmenation, so it is not exactly same with the original version**.   
 
-#### [[Video]](https://www.youtube.com/results?search_query=A+single+correpsondence+is+enough) [[Priprint Paper]](https://arxiv.org/abs/2203.06612)
+### Dependencies
++ `PCL` >= 1.8
++ `C++` >= 17
++ `Boost` >= 1.54
++ `Eigen` >= 3.2
++ `OpenMP` >= 4.5
++ `Teaser++` (tested with commit ver `e415c0d`, May 22, 2023)
+    ```shell
+    git clone https://github.com/MIT-SPARK/TEASER-plusplus.git
+    cd TEASER-plusplus && mkdir build && cd build
+    cmake .. -DENABLE_DIAGNOSTIC_PRINT=OFF
+    sudo make install -j16
+    sudo ldconfig
+    ```
++ (Optional, but recommended) `tbb` for parallelization and ***x10 faster computation in matching***
+    ```shell
+    sudo apt install libtbb-dev
+    ```
 
-## Demo
-
-![](materials/README_demo_v2.gif)
-
-## NEWS (23.1.27)
-- An improved version is under review in the Interntaitonal Journal of Robotics Research~(IJRR)
-- The codes would be refactored and then updated soon!
-
-## Characteristics
-
-* Single hpp file (`include/quatro.hpp`). It requires other hpp files, though :sweat_smile:
-* Intuitive usage based on the hierarchical inheritance of the `Registration` class in [Point Cloud Library (PCL)](https://pointclouds.org/). Quatro can be used as follows: 
-
-```c++
-// After the declaration of Quatro,
-quatro.setInputSource(srcMatched);
-quatro.setInputTarget(tgtMatched);
-Eigen::Matrix4d output;
-quatro.computeTransformation(output);
+### How to build
++ Git clone and `catkin build` this repository
+```shell
+cd ~/your_workspace/src
+git clone https://github.com/engcang/Quatro
+cd ..
+catkin build
+```
++ (Optional, but recommended) with `tbb`
+```shell
+catkin build -DQUATRO_TBB=ON
+```
++ (Optional) to enable `std::cout` for debugging,
+```shell
+catkin build -DQUATRO_DEBUG=ON
 ```
 
-* Robust global registration performance
+### Use case
++ Refer - [here](https://github.com/engcang/FAST-LIO-SAM-QN)
++ Or, refer the example as follows:
+    1. Make sure that you have all dependencies and built the `quatro` properly with `catkin build` as above
+    2. In the `CMakeLists.txt` of your wanted package, import `quatro` as a component of `catkin`
+        ```CMake
+        find_package(catkin REQUIRED COMPONENTS
+            ...
+            quatro #Include here
+            ...
+        )
+        include_directories(
+            ...
+            ${catkin_INCLUDE_DIRS} #Header files are included in catkin_INCLUDE_DIRS
+            ...
+        )
+        add_library(some_library src/some_src.cpp)
+        target_link_libraries(some_library ${catkin_LIBRARIES}) #Libraries are included in catkin_LIBRARIES
+        ```
+    4. Use in the source file of your wanted package as:
+        ```c++
+        #include <quatro/quatro_module.h>
+        using QuatroPointType = pcl::PointXYZI; //can be changed
 
-  - As shown in the below figures, our method shows the most promising performance compared with other state-of-the-art methods.
-  - It could be over-claim, yet our method would be more appropriate for terrestrial mobile platforms. Reducing the degree of freedom (DoF) usually makes algorithms be more robust against errors by projecting them into a lower dimension.
-      - E.g. 3D-3D correspondences -> 3D-2D correspondences, LOAM -> LeGO-LOAM
-  - In this context, our method is the dimension-reduced version of [TEASER++](https://github.com/MIT-SPARK/TEASER-plusplus)! 
+        shared_ptr<quatro<QuatroPointType>> m_quatro_handler = nullptr;
+        m_quatro_handler = std::make_shared<quatro<QuatroPointType>>(fpfh_normal_radius_, 
+                            fpfh_radius_, noise_bound_, rot_gnc_factor_, rot_cost_diff_thr_,
+                            quatro_max_iter_, estimat_scale_, optimize_matching, 
+                            distance_threshold, max_correspondences); //refer https://github.com/engcang/FAST-LIO-SAM-QN/blob/master/fast_lio_sam_qn/config/config.yaml#L28
 
+        ////// use
+        pcl::PointCloud<QuatroPointType> src_; //this should be not empty but the real data
+        pcl::PointCloud<QuatroPointType> dst_; //this should be not empty but the real data
+        bool if_valid_;
+        Eigen::Matrix4d output_tf_ = m_quatro_handler->align(src_, dst_, if_valid_);
+        if (if_valid_)
+        {
+            //do something wiht output_tf_
+        }
+        ```
 
-KITTI dataset                  |  NAVER LABS Loc. dataset
-:-------------------------:|:-------------------------:
-![](materials/kitti_for_readme.PNG) |  ![](materials/labs_for_readme.PNG)
+### License
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
+- This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/)
 
+### Acknowledgement
+- This work was supported by the Industry Core Technology Development Project, 20005062, Development of Artificial Intelligence Robot Autonomous Navigation Technology for Agile Movement in Crowded Space, funded by the Ministry of Trade, Industry & Energy (MOTIE, Republic of Korea) and by the research project “Development of A.I. based recognition, judgement and control solution for autonomous vehicle corresponding to atypical driving environment,” which is financed from the Ministry of Science and ICT (Republic of Korea) Contract No. 2019-0-00399. The student was supported by the BK21 FOUR from the Ministry of Education (Republic of Korea).
 
-#### Contributors
+### Copyright
+- All codes on this page are copyrighted by KAIST published under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License. You must attribute the work in the manner specified by the author. You may not use the work for commercial purposes, and you may only distribute the resulting work under the same license if you alter, transform, or create the work.
 
-* Beomsoo Kim (as a research intern): `qjatn1208@naver.com`
-* Daebeom Kim (as a research intern): `ted97k@naver.com`
-* Hyungtae Lim: `shapelim@kaist.ac.kr`
-
-#### ToDo
-
-- [x] Add ROS support
-- [x] Add demo videos
-- [ ] Add preprint paper
-- [ ] Add diverse examples for other sensor configuration
-
----
-
-## Contents
-1. [Test Env.](#Test-Env.)
-0. [How to Build](#How-to-Build)
-0. [How to Run Quatro](#How-to-Run-Quatro)
-0. [Citation](#citation)
-
-### Test Env.
-
-The code is tested successfully at
-* Linux 18.04 LTS
-* ROS Melodic
-
-## How to Build
-
-### ROS Setting
-1. Install the following dependencies
-
-```
-sudo apt install cmake libeigen3-dev libboost-all-dev
-```
-
-2. Install [ROS](http://torch.ch/docs/getting-started.html) on a machine.
-3. Then, build Quatro package and enjoy! :) We use [catkin tools](https://catkin-tools.readthedocs.io/en/latest/) 
-
-```
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-git clone git@github.com:url-kaist/Quatro.git
-cd ~/catkin_ws
-catkin build quatro 
-```
-
-**Note** Quatro requires `pmc` library, which is automatically installed via `3rdparty/find_dependencies.cmake`. 
-
-## How to Run Quatro
-
-### Prerequisites
-
-In this study, fast point feature histogram (FPFH) is utilized, which is widely used as a conventional descriptor for the registration. However, the original FPFH for a 3D point cloud captured by a 64-channel LiDAR sensor takes **tens of seconds**, which is too slow.  In summary, still, feature extraction & matching is the bottleneck for global registration :worried: (in fact, the accuracy is not very important because Quatro is extremely robust against outliers!).
-
-For this reason, we employ voxel-sampled FPFH, which is preceded by voxel-sampling. This is followed by the correspondence test. In addition, we employ [Patchwork](https://arxiv.org/abs/2108.05560), which is the state-of-the-art method for ground segmentation, and image projection to reject some subclusters, which is proposed in [Le-GO-LOAM](https://github.com/RobustFieldAutonomyLab/LeGO-LOAM). These modules are not presented in our paper! 
-
-Finally, we can reduce the computational time of feature extraction & matching, i.e. the front-end of global registration, from tens of seconds to almost 0.2 sec. The overall pipeline is as follows:
-
-![](materials/quatro_overview.PNG)
-
-#### Note
-
-For fine-tuning of the parameters to use this code in your own situations, please refer to `config` folder. In particular, for fine-tuning of Patchwork, please refer to [this Wiki](https://github.com/LimHyungTae/patchwork/wiki/4.-IMPORTANT:-Setting-Parameters-of-Patchwork-in-Your-Own-Env.)
-
-### TL;DR
-1. ~Download toy pcd bins files~ 
-  
-~The point clouds are from the KITTI dataset, so these are captured by Velodyne-64-HDE~
-
-Toy pcds are automatically downloaded. If there is a problem, follow the below commands:
-
-```
-roscd quatro
-cd materials
-wget https://urserver.kaist.ac.kr/publicdata/quatro/000540.bin
-wget https://urserver.kaist.ac.kr/publicdata/quatro/001319.bin
-```
-
-2. Launch the roslaunch file as follows:
-
-```
-OMP_NUM_THREADS=4 roslaunch quatro quatro.launch
-```
-
-(Unfortunately, for the first run, it shows rather slow and imprecise performance. It may be due to multi-thread issues.)
-
-Visualized inner pipelines        |  Source (red), target (green), and the estimated output (blue)
-:-------------------------:|:-------------------------:
-![](materials/quatro_inner.png) |  ![](materials/quatro_output.png)
-
-
-## Citation
-
-If our research has been helpful, please cite the below papers:
-
-```
+### Citation
+- If our research has been helpful, please cite the below paper:
+```tex
 @article{lim2022quatro,
     title={A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments},
     author={Lim, Hyungtae and Yeon, Suyong and Ryu, Suyong and Lee, Yonghan and Kim, Youngji and Yun, Jaeseong and Jung, Euigon and Lee, Donghwan and Myung, Hyun},
@@ -143,25 +102,11 @@ If our research has been helpful, please cite the below papers:
     pages={Accepted. To appear}
     }
 ```
-
+```tex
+@article{lim2023quatro-plusplus,
+  author    = {Lim, Hyungtae and Kim, Beomsoo and Kim, Daebeom and Lee, Eungchang and Myung, Hyun},
+  title     = {Quatro++: Robust Global Registration Exploiting Ground Segmentation for Loop Closing in LiDAR SLAM},
+  booktitle = {International Journal of Robotics Research},
+  year      = {2023},
+}
 ```
-@article{lim2021patchwork,
-    title={Patchwork: Concentric Zone-based Region-wise Ground Segmentation with Ground Likelihood Estimation Using a 3D LiDAR Sensor},
-    author={Lim, Hyungtae and Minho, Oh and Myung, Hyun},
-    journal={IEEE Robot. Autom. Lett.},
-    volume={6},
-    number={4},
-    pages={6458--6465},
-    year={2021},
-    }
-```
-
-## Acknowledgment
-This work was supported by the Industry Core Technology Development Project, 20005062, Development of Artificial Intelligence Robot Autonomous Navigation Technology for Agile Movement in Crowded Space, funded by the Ministry of Trade, Industry & Energy (MOTIE, Republic of Korea) and by the research project “Development of A.I. based recognition, judgement and control solution for autonomous vehicle corresponding to atypical driving environment,” which is financed from the Ministry of Science and ICT (Republic of Korea) Contract No. 2019-0-00399. The student was supported by the BK21 FOUR from the Ministry of Education (Republic of Korea).
-
-## License
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
-
-
-### Copyright
-- All codes on this page are copyrighted by KAIST published under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 License. You must attribute the work in the manner specified by the author. You may not use the work for commercial purposes, and you may only distribute the resulting work under the same license if you alter, transform, or create the work.
