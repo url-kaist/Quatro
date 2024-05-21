@@ -1,16 +1,22 @@
 # Quatro 
 
-Official page of *"A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments"*, which is accepted @ ICRA'22. **NOTE that this repository is the re-implmenation, so it is not exactly same with the original version**.   
+Official page of *"A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments"*, which is accepted @ ICRA'22. **NOTE that this repository is the re-implementation, so it is not exactly the same as the original version**.   
 
 #### [[Video]](https://www.youtube.com/results?search_query=A+single+correpsondence+is+enough) [[Priprint Paper]](https://arxiv.org/abs/2203.06612)
+
+
 
 ## Demo
 
 ![](materials/README_demo_v2.gif)
 
-## NEWS (23.1.27)
-- An improved version is under review in the Interntaitonal Journal of Robotics Research~(IJRR)
-- The codes would be refactored and then updated soon!
+## NEWS (May 21 2024)
+
+Now, Quatro is fully supported by [TEASER++ library](https://github.com/MIT-SPARK/TEASER-plusplus). Those who want a ROS-free version should visit that site, please :)
+
+## NEWS (Jan. 27 2023)
+- An improved version is under review in the International Journal of Robotics Research~(IJRR)
+- The codes will be refactored and then updated soon!
 
 ## Characteristics
 
@@ -91,7 +97,7 @@ catkin build quatro
 
 ### Prerequisites
 
-In this study, fast point feature histogram (FPFH) is utilized, which is widely used as a conventional descriptor for the registration. However, the original FPFH for a 3D point cloud captured by a 64-channel LiDAR sensor takes **tens of seconds**, which is too slow.  In summary, still, feature extraction & matching is the bottleneck for global registration :worried: (in fact, the accuracy is not very important because Quatro is extremely robust against outliers!).
+In this study, the fast point feature histogram (FPFH) is utilized, which is widely used as a conventional descriptor for the registration. However, the original FPFH for a 3D point cloud captured by a 64-channel LiDAR sensor takes **tens of seconds**, which is too slow.  In summary, still, feature extraction & matching is the bottleneck for global registration :worried: (in fact, the accuracy is not very important because Quatro is extremely robust against outliers!).
 
 For this reason, we employ voxel-sampled FPFH, which is preceded by voxel-sampling. This is followed by the correspondence test. In addition, we employ [Patchwork](https://arxiv.org/abs/2108.05560), which is the state-of-the-art method for ground segmentation, and image projection to reject some subclusters, which is proposed in [Le-GO-LOAM](https://github.com/RobustFieldAutonomyLab/LeGO-LOAM). These modules are not presented in our paper! 
 
@@ -123,7 +129,7 @@ wget https://urserver.kaist.ac.kr/publicdata/quatro/001319.bin
 OMP_NUM_THREADS=4 roslaunch quatro quatro.launch
 ```
 
-(Unfortunately, for the first run, it shows rather slow and imprecise performance. It may be due to multi-thread issues.)
+(Unfortunately, for the first run, it shows a rather slow and imprecise performance. It may be due to multi-thread issues.)
 
 Visualized inner pipelines        |  Source (red), target (green), and the estimated output (blue)
 :-------------------------:|:-------------------------:
@@ -157,7 +163,7 @@ If our research has been helpful, please cite the below papers:
 ```
 
 ## Acknowledgment
-This work was supported by the Industry Core Technology Development Project, 20005062, Development of Artificial Intelligence Robot Autonomous Navigation Technology for Agile Movement in Crowded Space, funded by the Ministry of Trade, Industry & Energy (MOTIE, Republic of Korea) and by the research project “Development of A.I. based recognition, judgement and control solution for autonomous vehicle corresponding to atypical driving environment,” which is financed from the Ministry of Science and ICT (Republic of Korea) Contract No. 2019-0-00399. The student was supported by the BK21 FOUR from the Ministry of Education (Republic of Korea).
+This work was supported by the Industry Core Technology Development Project, 20005062, Development of Artificial Intelligence Robot Autonomous Navigation Technology for Agile Movement in Crowded Space, funded by the Ministry of Trade, Industry & Energy (MOTIE, Republic of Korea) and by the research project “Development of A.I. based recognition, judgment and control solution for autonomous vehicle corresponding to atypical driving environment,” which is financed from the Ministry of Science and ICT (Republic of Korea) Contract No. 2019-0-00399. The student was supported by the BK21 FOUR from the Ministry of Education (Republic of Korea).
 
 ## License
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
