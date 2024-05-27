@@ -141,12 +141,24 @@ Visualized inner pipelines        |  Source (red), target (green), and the estim
 If our research has been helpful, please cite the below papers:
 
 ```
+@article{lim2024quatro++,
+  title={Quatro++: Robust global registration exploiting ground segmentation for loop closing in LiDAR SLAM},
+  author={Lim, Hyungtae and Kim, Beomsoo and Kim, Daebeom and Mason Lee, Eungchang and Myung, Hyun},
+  journal={The International Journal of Robotics Research},
+  volume={43},
+  number={5},
+  pages={685--715},
+  year={2024}
+}
+```
+
+```
 @article{lim2022quatro,
     title={A Single Correspondence Is Enough: Robust Global Registration to Avoid Degeneracy in Urban Environments},
     author={Lim, Hyungtae and Yeon, Suyong and Ryu, Suyong and Lee, Yonghan and Kim, Youngji and Yun, Jaeseong and Jung, Euigon and Lee, Donghwan and Myung, Hyun},
     booktitle={Proc. IEEE Int. Conf. Robot. Autom.},
-    year={2022},
-    pages={Accepted. To appear}
+    pages={8010--8017},
+    year={2022}
     }
 ```
 
